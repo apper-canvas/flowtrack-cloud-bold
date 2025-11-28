@@ -7,12 +7,12 @@ import Textarea from "@/components/atoms/Textarea"
 import ApperIcon from "@/components/ApperIcon"
 
 const TaskForm = ({ onAddTask }) => {
-  const [title, setTitle] = useState("")
+const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [priority, setPriority] = useState("medium")
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const [uploadedFiles, setUploadedFiles] = useState([])
   const validateForm = () => {
     const newErrors = {}
     
@@ -34,13 +34,26 @@ const TaskForm = ({ onAddTask }) => {
     setIsSubmitting(true)
     
     try {
+// Get files from file uploader if available
+      let files = uploadedFiles;
+      if (window.ApperSDK && window.ApperSDK.ApperFileUploader) {
+        try {
+          const retrievedFiles = await window.ApperSDK.ApperFileUploader.FileField.getFiles('file_data_c');
+          files = retrievedFiles || uploadedFiles;
+        } catch (error) {
+          console.warn('Could not retrieve files from uploader:', error);
+        }
+      }
+
       await onAddTask({
         title: title.trim(),
         description: description.trim(),
         priority,
         status: "active",
         createdAt: new Date().toISOString(),
-        completedAt: null
+        completedAt: null,
+        tags: "",
+        files: files
       })
       
       // Reset form
