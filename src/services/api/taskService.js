@@ -15,9 +15,10 @@ export const taskService = {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "priority_c"}},
           {"field": {"Name": "status_c"}},
-          {"field": {"Name": "completed_at_c"}},
+{"field": {"Name": "completed_at_c"}},
           {"field": {"Name": "CreatedOn"}},
-          {"field": {"Name": "Tags"}}
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "task_files_c"}}
         ],
         orderBy: [{
           "fieldName": "CreatedOn",
@@ -41,7 +42,8 @@ export const taskService = {
         status: task.status_c || 'active',
         completedAt: task.completed_at_c || null,
         createdAt: task.CreatedOn || new Date().toISOString(),
-        tags: task.Tags || ''
+tags: task.Tags || '',
+        taskFiles: task.task_files_c || []
       }));
 
       return transformedData;
@@ -65,9 +67,10 @@ export const taskService = {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "priority_c"}},
           {"field": {"Name": "status_c"}},
-          {"field": {"Name": "completed_at_c"}},
+{"field": {"Name": "completed_at_c"}},
           {"field": {"Name": "CreatedOn"}},
-          {"field": {"Name": "Tags"}}
+          {"field": {"Name": "Tags"}},
+          {"field": {"Name": "task_files_c"}}
         ]
       };
 
@@ -92,7 +95,8 @@ export const taskService = {
         status: task.status_c || 'active',
         completedAt: task.completed_at_c || null,
         createdAt: task.CreatedOn || new Date().toISOString(),
-        tags: task.Tags || ''
+tags: task.Tags || '',
+        taskFiles: task.task_files_c || []
       };
     } catch (error) {
       console.error(`Error fetching task ${id}:`, error?.response?.data?.message || error);
@@ -113,8 +117,11 @@ export const taskService = {
           description_c: taskData.description || '',
           priority_c: taskData.priority || 'medium',
           status_c: taskData.status || 'active',
-          completed_at_c: taskData.completedAt || null,
-          Tags: taskData.tags || ''
+completed_at_c: taskData.completedAt || null,
+          Tags: taskData.tags || '',
+          task_files_c: taskData.taskFiles && taskData.taskFiles.length > 0 
+            ? window.ApperSDK?.ApperFileUploader?.toCreateFormat(taskData.taskFiles) || taskData.taskFiles
+            : []
         }]
       };
 
@@ -145,8 +152,9 @@ export const taskService = {
             priority: createdTask.priority_c || 'medium',
             status: createdTask.status_c || 'active',
             completedAt: createdTask.completed_at_c || null,
-            createdAt: createdTask.CreatedOn || new Date().toISOString(),
-            tags: createdTask.Tags || ''
+createdAt: createdTask.CreatedOn || new Date().toISOString(),
+            tags: createdTask.Tags || '',
+            taskFiles: createdTask.task_files_c || []
           };
         }
       }

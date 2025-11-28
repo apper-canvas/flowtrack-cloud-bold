@@ -5,7 +5,7 @@ import Input from "@/components/atoms/Input"
 import Select from "@/components/atoms/Select"
 import Textarea from "@/components/atoms/Textarea"
 import ApperIcon from "@/components/ApperIcon"
-
+import ApperFileFieldComponent from "@/components/atoms/FileUploader/ApperFileFieldComponent"
 const TaskForm = ({ onAddTask }) => {
 const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -38,7 +38,7 @@ const [title, setTitle] = useState("")
       let files = uploadedFiles;
       if (window.ApperSDK && window.ApperSDK.ApperFileUploader) {
         try {
-          const retrievedFiles = await window.ApperSDK.ApperFileUploader.FileField.getFiles('file_data_c');
+          const retrievedFiles = await window.ApperSDK.ApperFileUploader.FileField.getFiles('task_files_c');
           files = retrievedFiles || uploadedFiles;
         } catch (error) {
           console.warn('Could not retrieve files from uploader:', error);
@@ -53,7 +53,7 @@ const [title, setTitle] = useState("")
         createdAt: new Date().toISOString(),
         completedAt: null,
         tags: "",
-        files: files
+taskFiles: files
       })
       
       // Reset form
@@ -159,6 +159,25 @@ const [title, setTitle] = useState("")
                 />
               </div>
             </div>
+</div>
+
+          {/* File Upload Section */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Attachments
+            </label>
+            <ApperFileFieldComponent
+              elementId="task_files_c"
+              config={{
+                fieldKey: 'task_files_c',
+                fieldName: 'task_files_c',
+                tableName: 'task_c',
+                apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+                apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY,
+                existingFiles: [],
+                fileCount: 0
+              }}
+            />
           </div>
 
           <div className="flex justify-end pt-4">
