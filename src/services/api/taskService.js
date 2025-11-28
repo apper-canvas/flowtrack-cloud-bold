@@ -18,7 +18,8 @@ export const taskService = {
 {"field": {"Name": "completed_at_c"}},
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "Tags"}},
-          {"field": {"Name": "task_files_c"}}
+{"field": {"Name": "task_files_c"}},
+          {"field": {"Name": "task_images_c"}}
         ],
         orderBy: [{
           "fieldName": "CreatedOn",
@@ -43,7 +44,8 @@ export const taskService = {
         completedAt: task.completed_at_c || null,
         createdAt: task.CreatedOn || new Date().toISOString(),
 tags: task.Tags || '',
-        taskFiles: task.task_files_c || []
+taskFiles: task.task_files_c || [],
+        taskImages: task.task_images_c || []
       }));
 
       return transformedData;
@@ -70,7 +72,8 @@ tags: task.Tags || '',
 {"field": {"Name": "completed_at_c"}},
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "Tags"}},
-          {"field": {"Name": "task_files_c"}}
+{"field": {"Name": "task_files_c"}},
+          {"field": {"Name": "task_images_c"}}
         ]
       };
 
@@ -96,7 +99,8 @@ tags: task.Tags || '',
         completedAt: task.completed_at_c || null,
         createdAt: task.CreatedOn || new Date().toISOString(),
 tags: task.Tags || '',
-        taskFiles: task.task_files_c || []
+taskFiles: task.task_files_c || [],
+        taskImages: task.task_images_c || []
       };
     } catch (error) {
       console.error(`Error fetching task ${id}:`, error?.response?.data?.message || error);
@@ -119,8 +123,11 @@ tags: task.Tags || '',
           status_c: taskData.status || 'active',
 completed_at_c: taskData.completedAt || null,
           Tags: taskData.tags || '',
-          task_files_c: taskData.taskFiles && taskData.taskFiles.length > 0 
+task_files_c: taskData.taskFiles && taskData.taskFiles.length > 0 
             ? window.ApperSDK?.ApperFileUploader?.toCreateFormat(taskData.taskFiles) || taskData.taskFiles
+            : [],
+          task_images_c: taskData.taskImages && taskData.taskImages.length > 0 
+            ? window.ApperSDK?.ApperFileUploader?.toCreateFormat(taskData.taskImages) || taskData.taskImages
             : []
         }]
       };
@@ -154,7 +161,8 @@ completed_at_c: taskData.completedAt || null,
             completedAt: createdTask.completed_at_c || null,
 createdAt: createdTask.CreatedOn || new Date().toISOString(),
             tags: createdTask.Tags || '',
-            taskFiles: createdTask.task_files_c || []
+taskFiles: createdTask.task_files_c || [],
+            taskImages: createdTask.task_images_c || []
           };
         }
       }

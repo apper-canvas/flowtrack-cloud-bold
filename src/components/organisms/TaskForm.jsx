@@ -1,18 +1,19 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
-import Button from "@/components/atoms/Button"
-import Input from "@/components/atoms/Input"
-import Select from "@/components/atoms/Select"
-import Textarea from "@/components/atoms/Textarea"
-import ApperIcon from "@/components/ApperIcon"
-import ApperFileFieldComponent from "@/components/atoms/FileUploader/ApperFileFieldComponent"
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import Textarea from "@/components/atoms/Textarea";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import ApperFileFieldComponent from "@/components/atoms/FileUploader/ApperFileFieldComponent";
 const TaskForm = ({ onAddTask }) => {
 const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [priority, setPriority] = useState("medium")
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState([])
+const [uploadedFiles, setUploadedFiles] = useState([])
+  const [uploadedImages, setUploadedImages] = useState([])
   const validateForm = () => {
     const newErrors = {}
     
@@ -35,11 +36,16 @@ const [title, setTitle] = useState("")
     
     try {
 // Get files from file uploader if available
-      let files = uploadedFiles;
+let files = uploadedFiles;
+      let images = uploadedImages;
+      
       if (window.ApperSDK && window.ApperSDK.ApperFileUploader) {
         try {
           const retrievedFiles = await window.ApperSDK.ApperFileUploader.FileField.getFiles('task_files_c');
           files = retrievedFiles || uploadedFiles;
+          
+          const retrievedImages = await window.ApperSDK.ApperFileUploader.FileField.getFiles('task_images_c');
+          images = retrievedImages || uploadedImages;
         } catch (error) {
           console.warn('Could not retrieve files from uploader:', error);
         }
@@ -52,8 +58,9 @@ const [title, setTitle] = useState("")
         status: "active",
         createdAt: new Date().toISOString(),
         completedAt: null,
-        tags: "",
-taskFiles: files
+tags: "",
+        taskFiles: files,
+        taskImages: images
       })
       
       // Reset form
@@ -160,8 +167,26 @@ taskFiles: files
               </div>
             </div>
 </div>
+{/* Images Section */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Images
+            </label>
+            <ApperFileFieldComponent
+              elementId="task_images_c"
+              config={{
+                fieldKey: 'task_images_c',
+                fieldName: 'task_images_c',
+                tableName: 'task_c',
+                apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+                apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY,
+                existingFiles: [],
+                fileCount: 0
+              }}
+            />
+          </div>
 
-          {/* File Upload Section */}
+{/* Attachments Section */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
               Attachments
